@@ -1,0 +1,152 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="VSC Deep Image Classification Demos">
+    <meta name="author" content="BVLC (http://bvlc.eecs.berkeley.edu/)">
+
+    <title>TopVision Image Recognition Demos </title>
+
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet">
+
+    <script type="text/javascript" src="//code.jquery.com/jquery-2.1.1.js"></script>
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+
+    <!-- Script to instantly classify an image once it is uploaded. -->
+    <script type="text/javascript">
+      $(document).ready(
+        function(){
+          $('#image_search_file').attr('disabled',true);
+          $('#imagefile').change(
+            function(){
+              if ($(this).val()){
+                $('#formupload').submit();
+              }
+            }
+          );          
+        }
+      );
+    </script>
+    
+    <!-- Script to instantly classify an image once it is uploaded. -->
+    <script type="text/javascript">
+      $(document).ready(
+        function(){
+          $('#imageset_file').change(
+            function(){
+              if ($(this).val()){
+                $('#formupload_imageset').submit();
+              }
+            }
+          );
+        }
+      );
+    </script>
+
+
+
+
+    <style>
+    body {
+      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      line-height:1.5em;
+      color: #232323;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    h1, h2, h3 {
+      font-family: Times, serif;
+      line-height:1.5em;
+      border-bottom: 1px solid #ccc;
+    }
+    </style>
+  </head>
+
+  <body>
+    <!-- Begin page content -->
+    <div class="container">
+      <div class="page-header">
+        <h1><a href="/">TopVision Image Recognition Demos </a></h1>
+        <p>
+          The TopVision deep neural network for Image Classification and Retrieval uses state-of-art computer vision technology and machine learning technology.
+        </p>
+      </div>
+
+      <div>
+        <h2>Image Retrieval</h2>
+      </div>
+      
+      <form id="formupload_imageset" class="form-inline" role="form" action="image_set_upload" method="post" enctype="multipart/form-data">
+        <div class="form-group">
+          <label for="imageset_file"> STEP1: Upload image gallery file(in zip format):</label>
+          <input type="file" name="imageset_file" id="imageset_file">
+        </div>
+        <!--<input type="submit" class="btn btn-primary" value="Image Set File" id="imageset_file"></input>-->
+      </form>
+      <br/><br/>
+      
+      {% if has_result %}
+      {% if result[0] < 0 %}
+      <!-- we have error in the result. -->
+      <div class="alert alert-danger">{{ result[1] }} 
+      </div>
+      {% else %}
+      <div class="media">
+        <a class="pull-left" href="#"><img class="media-object" width="192" height="192" src={{ imagesrc }}></a>
+        <div class="media-body">
+          <div class="bs-example bs-example-tabs">
+            <form>
+              <fieldset>
+                <legend>Retrieval Result</legend>                               
+                {% if result[0]==0 %}
+                <h3>
+                  No similar images found.
+                </h3>
+                {% else %}
+                  {% for tmp_img in result_images %}
+                    <img style="display:inline"  class="media-object" width="90" height="90" src={{ tmp_img }}> 
+                  {% endfor %}
+                {% endif %} 
+              </fieldset>
+            </form>           
+          </div>
+
+        </div>
+      </div>
+      <p> DNN took {{ result[1] }} seconds. </p>
+      {% endif %}
+      <hr>
+      {% endif %}
+      
+      
+        
+      <label for="imageurl">STEP2: Input target image URL:</label>   
+      <form role="form" action="image_search_url" method="get">
+        <div class="form-group">
+          <div class="input-group">
+            <input type="text" class="form-control" name="imageurl" id="imageurl" placeholder="Provide an image URL">
+            <span class="input-group-btn">
+              <input class="btn btn-primary" value="Search URL" type="submit" id="searchurl"></input>
+            </span>
+          </div><!-- /input-group -->
+        </div>
+      </form>
+
+      <form id="formupload" class="form-inline" role="form" action="image_search_upload" method="post" enctype="multipart/form-data">
+        <div class="form-group">
+          <label for="imagefile">Or upload an image:</label>
+          <input type="file" name="imagefile" id="imagefile">
+        </div>
+        <!--<input type="submit" class="btn btn-primary" value="Face detect from the File" id="image_search_file"></input>-->
+      </form>
+    </div>
+
+    <hr>
+    <div id="footer">
+      <div class="container">
+        <p>&copy; TOPVISION  2015. <a href="/team-member">Team Members. </a> </p>
+      </div>
+   </div>
+ </body>
+</html>
